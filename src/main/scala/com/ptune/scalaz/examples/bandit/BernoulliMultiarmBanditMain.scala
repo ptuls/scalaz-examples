@@ -15,26 +15,29 @@ import scalaz._
 object BernoulliMultiarmBanditMain {
   def main(args: Array[String]): Unit = {
     val bernoulliDistParams = Array(0.1, 0.6, 0.3, 0.4)
-    val bernoulliDists: Array[Bernoulli] =
+    val bernoulliDists =
       bernoulliDistParams.map(Bernoulli.distribution)
 
+    /**
+      * Number of trials of the simulator
+      */
     val numTrials = 10000
 
     /**
       * MaxEnt-style prior distribution, corresponds to Beta(1,1), i.e., uniform distribution
       */
-    val initState = bernoulliDistParams.map(_ => BanditCounter(1, 1))
+    val initCounters = bernoulliDistParams.map(_ => BanditCounter(1, 1))
 
     println("Running simulation")
     println("Final state means (Thompson Sampling):")
-    val finalStateTS =
-      simulate(numTrials)(initState, bernoulliDists, pullThompson())
-    printFinalCounterStates(finalStateTS)
+    val finalCountersTS =
+      simulate(numTrials)(initCounters, bernoulliDists, pullThompson())
+    printFinalCounterStates(finalCountersTS)
 
     println("\nFinal state means (Epsilon-greedy):")
-    val finalStateEG =
-      simulate(numTrials)(initState, bernoulliDists, pullGreedy())
-    printFinalCounterStates(finalStateEG)
+    val finalCountersEG =
+      simulate(numTrials)(initCounters, bernoulliDists, pullGreedy())
+    printFinalCounterStates(finalCountersEG)
   }
 
   def printFinalCounterStates(counters: Array[BanditCounter]): Unit = {
@@ -61,5 +64,4 @@ object BernoulliMultiarmBanditMain {
       updateState
     }
   }
-
 }

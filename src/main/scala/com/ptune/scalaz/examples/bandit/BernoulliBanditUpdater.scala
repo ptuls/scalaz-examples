@@ -23,14 +23,10 @@ object BernoulliBanditUpdater {
 
   private def updateState(counters: Array[BanditCounter],
                           chosenArm: Int,
-                          reward: Boolean): Array[BanditCounter] = {
-    val newBanditCounter = if (reward) {
-      BanditCounter(counters(chosenArm).successCount + 1,
-                    counters(chosenArm).failureCount)
-    } else {
-      BanditCounter(counters(chosenArm).successCount,
-                    counters(chosenArm).failureCount + 1)
-    }
+                          reward: Int): Array[BanditCounter] = {
+    val newBanditCounter = BanditCounter(
+      counters(chosenArm).successCount + reward,
+      counters(chosenArm).failureCount + (1 - reward))
 
     counters.zipWithIndex.map {
       case (banditCounter: BanditCounter, index: Int) =>
@@ -42,8 +38,8 @@ object BernoulliBanditUpdater {
     }
   }
 
-  private def getReward(dists: Array[Bernoulli], chosenArm: Int): Boolean = {
+  private def getReward(dists: Array[Bernoulli], chosenArm: Int): Int = {
     assert(chosenArm >= 0 && chosenArm < dists.length)
-    dists(chosenArm).sample()
+    if (dists(chosenArm).sample()) 1 else 0
   }
 }
