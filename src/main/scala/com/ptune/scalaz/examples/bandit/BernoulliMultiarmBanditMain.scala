@@ -3,6 +3,7 @@ package com.ptune.scalaz.examples.bandit
 import breeze.stats.distributions.Bernoulli
 import com.ptune.scalaz.examples.bandit.BernoulliBanditStrategy._
 import com.ptune.scalaz.examples.bandit.BernoulliBanditUpdater._
+import com.typesafe.scalalogging.LazyLogging
 
 import scala.annotation.tailrec
 import scalaz._
@@ -12,7 +13,7 @@ import scalaz._
   * State monad to record state of the counters and arm pull action. State monad
   * fits into the reinforcement learning paradigm.
   */
-object BernoulliMultiarmBanditMain {
+object BernoulliMultiarmBanditMain extends LazyLogging {
   def main(args: Array[String]): Unit = {
     val bernoulliDistParams = Array(0.1, 0.6, 0.3, 0.4)
     val bernoulliDists =
@@ -28,13 +29,14 @@ object BernoulliMultiarmBanditMain {
       */
     val initCounters = bernoulliDistParams.map(_ => BanditCounter(1, 1))
 
-    println("Running simulation")
-    println("Final state means (Thompson Sampling):")
+    logger.info("Running simulation")
+    logger.info("Final state means (Thompson Sampling):")
     val finalCountersTS =
       simulate(numTrials)(initCounters, bernoulliDists, pullThompson())
     printFinalCounterStates(finalCountersTS)
 
-    println("\nFinal state means (Epsilon-greedy):")
+    logger.info("")
+    logger.info("Final state means (Epsilon-greedy):")
     val finalCountersEG =
       simulate(numTrials)(initCounters, bernoulliDists, pullGreedy())
     printFinalCounterStates(finalCountersEG)
@@ -43,7 +45,7 @@ object BernoulliMultiarmBanditMain {
   def printFinalCounterStates(counters: Array[BanditCounter]): Unit = {
     counters.zipWithIndex.foreach {
       case (banditCounter: BanditCounter, index: Int) =>
-        println(s"Bandit counter $index: ${banditCounter.successCount.toDouble /
+        logger.info(s"Bandit counter $index: ${banditCounter.successCount.toDouble /
           (banditCounter.successCount.toDouble + banditCounter.failureCount.toDouble)}")
     }
   }

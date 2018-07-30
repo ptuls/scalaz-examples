@@ -5,6 +5,7 @@ object Depend {
   lazy val lazyLoggerVersion = "3.7.2"
   lazy val logBackVersion = "1.1.2"
   lazy val scalazVersion = "7.2.25"
+  lazy val slf4jVersion = "1.7.7"
   lazy val sparkVersion = "2.3.0"
 
   lazy val betterFiles = Seq(
@@ -23,6 +24,11 @@ object Depend {
     "org.scalaz" %% "scalaz-effect"
   ).map(_ % scalazVersion)
 
+  lazy val slf4j = Seq(
+    "org.slf4j" % "slf4j-api" % s"$slf4jVersion",
+    "org.slf4j" % "jcl-over-slf4j" % s"$slf4jVersion"
+  ).map(_.force())
+
   lazy val spark = Seq(
     "org.apache.spark" %% "spark-core",
     "org.apache.spark" %% "spark-sql",
@@ -40,6 +46,7 @@ object Depend {
     betterFiles ++
       lazyLogging ++
       scalaz ++
+      slf4j ++
       spark ++
       scalaTestCheck
 }
