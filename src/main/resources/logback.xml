@@ -8,7 +8,7 @@
 
     <logger name="org" level="ERROR"/>
     <logger name="com" level="WARN"/>
-    <logger name="com.compose" level="INFO"/>
+    <logger name="com.ptune" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="console"/>
