@@ -58,7 +58,7 @@ object BernoulliMultiarmBanditMain extends LazyLogging {
   ): Array[BanditCounter] = {
     assert(trials >= 0, "number of trials must be non-negative")
 
-    val pullState = pullThompson().run(init)
+    val pullState = pullStrategy.run(init)
     val updateState = update(bernoulliDists, pullState._2).run(pullState._1)._1
     if (trials > 0) {
       simulate(trials - 1)(updateState, bernoulliDists, pullStrategy)
